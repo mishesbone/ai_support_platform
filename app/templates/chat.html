@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - AI Support Platform{% endblock %}
+
+{% block content %}
+<h2>Chat with Support</h2>
+<form method="POST" action="/api/chat">
+    <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+<h3>Chat History</h3>
+<ul>
+    {% for chat in chats %}
+    <li>{{ chat.timestamp }} - {{ chat.message }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

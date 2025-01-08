@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Tickets - AI Support Platform{% endblock %}
+
+{% block content %}
+<h2>Your Tickets</h2>
+<ul>
+    {% for ticket in tickets %}
+    <li>Ticket ID: {{ ticket.id }} - Status: {{ ticket.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

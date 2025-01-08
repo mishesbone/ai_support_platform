@@ -1,14 +1,14 @@
-# This file contains the routes for the chat feature of the application.
-# The routes are protected with JWT authentication.
-
-#routes/chat.py
+# app/routes/chat.py
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Chat, Ticket
-from app.routes import bp
-from flask import jsonify, request
+from flask import Blueprint, request, jsonify
+from app import db
 
-@bp.route("/", methods=["POST"])
+# Define the Blueprint
+chat_bp = Blueprint('chat', __name__)
+
+@chat_bp.route("/", methods=["POST"])  # Use chat_bp here
 @jwt_required()
 def send_message():
     data = request.json
@@ -22,10 +22,7 @@ def send_message():
     return jsonify({"message": "Chat message sent"}), 201
 
 
-
-
-
-@bp.route("/update/<int:chat_id>", methods=["PUT"])
+@chat_bp.route("/update/<int:chat_id>", methods=["PUT"])  # Use chat_bp here
 @jwt_required()
 def update_chat(chat_id):
     data = request.json
@@ -42,12 +39,7 @@ def update_chat(chat_id):
     return jsonify({"message": "Chat message updated"}), 200
 
 
-from flask import Blueprint, request, jsonify
-from app.models import Chat, db
-
-bp = Blueprint('chat', __name__)
-
-@bp.route("/", methods=["POST"])
+@chat_bp.route("/", methods=["POST"])  # Use chat_bp here (this route seems duplicated, remove it if not needed)
 def send_message():
     data = request.json
     new_chat = Chat(
@@ -59,15 +51,14 @@ def send_message():
     db.session.commit()
     return jsonify({"message": "Chat message sent"}), 201
 
-@bp.route("/<int:ticket_id>", methods=["GET"])
+@chat_bp.route("/<int:ticket_id>", methods=["GET"])  # Use chat_bp here
 def get_chats(ticket_id):
     chats = Chat.query.filter_by(ticket_id=ticket_id).all()
     return jsonify([{"id": chat.id, "message": chat.message, "timestamp": chat.timestamp} for chat in chats])
 
-@bp.route("/<int:chat_id>", methods=["DELETE"])
+@chat_bp.route("/<int:chat_id>", methods=["DELETE"])  # Use chat_bp here
 def delete_chat(chat_id):
     chat = Chat.query.get(chat_id)
     db.session.delete(chat)
     db.session.commit()
     return jsonify({"message": "Chat message deleted"}), 200
-
